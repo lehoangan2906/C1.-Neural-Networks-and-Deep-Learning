@@ -5,4 +5,5 @@
 
 This is my directory to store all course materials of Neural Network and Deep Learning by Deeplearning.ai
 
-Course website: https://www.coursera.org/learn/neural-networks-deep-learning/home/welcome
+Course site: https://www.coursera.org/learn/neural-networks-deep-learning/home/welcome
+
