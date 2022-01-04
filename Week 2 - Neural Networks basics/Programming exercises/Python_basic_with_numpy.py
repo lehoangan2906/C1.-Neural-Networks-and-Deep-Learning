@@ -190,6 +190,7 @@ image2vector_test(image2vector)
 
 print("\n-----------------------------------------\n")
 
+<<<<<<< HEAD
 """
 1.4 - Normalizing rows
     Another common technique we use in Machine Learning and Deep Learning is to normalize 
@@ -317,3 +318,5 @@ softmax_test(softmax)
 """
 
 print("\n-----------------------------------------\n")
+=======
+>>>>>>> e911f46eff62a28c386cb13b8043ceaa4d36f154
