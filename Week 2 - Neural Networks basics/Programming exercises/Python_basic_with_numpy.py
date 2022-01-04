@@ -312,9 +312,183 @@ softmax_test(softmax)
     What you need to remember:
         - np.exp() works for any np.array x and applies the exponential function to every 
         coordinate
-        
-
+        - The sigmoid function and its gradient
+        - image2vector is commonly used in deep learning
+        - np.reshape is widely used. In the future, you'll see that keeping your matrix/vector
+        dimensions straight will go toward eliminating a lot of bugs.
+        - numpy has efficient built-in functions
+        - broadcasting is extremely useful
 """
 
 print("\n-----------------------------------------\n")
 
+"""
+2 - Vectorization
+    In deep learning, you deal with very large datasets. Hence, a non-computationally-optimal
+    function can become a huge bottleneck in your algorithm and can result in a model that
+    takes ages to run. To make sure that your code is computationally efficient, you will use
+    vectorization. For example, try to tell the difference between the following implementations
+    of the dot/outer/elemenwise product.
+"""
+
+import time
+
+x1 = [9, 2, 5, 0, 0, 7, 5, 0, 0, 0, 9, 2, 5, 0, 0]
+x2 = [9, 2, 2, 9, 0, 9, 2, 5, 0, 0, 9, 2, 5, 0, 0]
+
+### CLASSIC DOT PRODUCT OF VECTORS IMPLEMENTATION ###
+tic = time.process_time()
+dot = 0
+
+for i in range(len(x1)):
+    dot += x1[i] * x2[i]
+
+toc = time.process_time()
+print("dot = " + str(dot) + " \n ----- Computation time = " + str(1000 * (toc - tic)) + "\n")
+
+### CLASSIC OUTER PRODUCT IMPLEMENTATION ###
+tic = time.process_time()
+outer = np.zeros((len(x1), len(x2)))    # we create a len(x1) * len(x2) matrix with only zeros
+
+for i in range(len(x1)):
+    for j in range(len(x2)):
+        outer[i, j] = x1[i] * x2[j]
+
+toc = time.process_time()
+print("outer = " + str(outer) + "\n ----- Computation time = " + str(1000 * ( toc - tic)) + "\n")
+
+### CLASSIC ELEMENWISE IMPLEMENTATION ###
+tic = time.process_time()
+mul = np.zeros(len(x1))
+
+for i in range(len(x1)):
+    mul[i] = x1[i] * x2[i]
+
+toc = time.process_time()
+print("elemenwise multiplication = " + str(mul) + "\n ----- Computation time = " + str(1000 * (toc - tic)) + "\n")
+
+### CLASSIC GENERAL DOT PRODUCT IMPLEMENTATION ###
+W = np.random.rand(3, len(x1)) # Random 3*len(x1) numpy array
+tic = time.process_time()
+gdot = np.zeros(W.shape[0])
+
+for i in range(W.shape[0]):
+    for j in range (len(x1)):
+        gdot[i] += W[i, j] * x1[j]
+
+toc = time.process_time()
+print("gdot = " + str(gdot) + "\n ----- Computation time = " + str(1000 * (toc - tic)) + "\n")
+
+print("\n-----------------------------------------\n")
+
+x1 = [9, 2, 5, 0, 0, 7, 5, 0, 0, 0, 9, 2, 5, 0, 0]
+x2 = [9, 2, 2, 9, 0, 9, 2, 5, 0, 0, 9, 2, 5, 0, 0]
+
+### VECTORIZED DOT PRODUCT OF VECTORS ###
+tic = time.process_time()
+dot = np.dot(x1, x2)
+toc = time.process_time()
+print("dot = " + str(dot) + " \n ----- Computation time = " + str(1000 * (toc - tic)) + "\n")
+
+### VECTORIZED OUTER PRODUCT ###
+tic = time.process_time()
+outer = np.outer(x1, x2)
+toc = time.process_time()
+print("outer = " + str(outer) + "\n ----- Computation time = " + str(1000 * ( toc - tic)) + "\n")
+
+### VECTORIZED ELEMENWISE MULTIPLICATION ###
+tic = time.process_time()
+mul = np.multiply(x1, x2)
+toc = time.process_time()
+print("elemenwise multiplication = " + str(mul) + "\n ----- Computation time = " + str(1000 * (toc - tic)) + "\n")
+
+### VECTORIZED GENERAL DOT PRODUCT ###
+tic = time.process_time()
+dot = np.dot(W, x1)
+toc = time.process_time()
+print("gdot = " + str(gdot) + "\n ----- Computation time = " + str(1000 * (toc - tic)) + "\n")
+
+print("\n-----------------------------------------\n")
+
+"""
+As you may have noticed, the vectorized implementation is much cleaner and more
+efficient. For bigger vectors/matrices, the differences in running time become even bigger.
+
+Note that np.dot() performs a matrix-matrix or matrix-vector multiplication. This is 
+different from np.multiply() and the * operator (which is equivalent to .* in 
+Matlab/Octave), which performs an element-wise multiplication.
+
+2.1 Implement the L1 and L2 loss functions
+
+    Exercise 8 - L1
+        Implement the numpy vectorized version of the L1 loss. You may find the function abs(x)
+        (absolute value of x) useful.
+
+        Reminder:
+
+            - The loss is used to evaluate the performance of your model. The bigger your loss is,
+            the more different your predictions (y^) are from the true values (y). In deep learning,
+            you use optimization algorithms like Gradient Descent to train your model and to 
+            minimize the cost.
+
+"""
+
+def L1(yhat, y):
+    """
+    Arguments:
+    yhat -- vector of size m (predicted labels)
+    y -- vector of size m (true labels)
+    
+    Returns:
+    loss -- the value of the L1 loss function defined above
+    """
+    loss = np.sum(abs(y - yhat))
+
+    return loss
+
+yhat = np.array([.9, 0.2, 0.1, .4, .9])
+y = np.array([1, 0, 0, 1, 1])
+print("L1 = " + str(L1(yhat, y)))
+
+L1_test(L1)
+
+print("\n-----------------------------------------\n")
+
+"""
+Exercise 9 - L2
+    Immplement the numpy vectorized version of the L2 loss. There are several way of
+    implementing the L2 loss but you may find the function np.dot() useful. As a reminder, if
+    x = [x1, x2, ..., xn], then np.dot(x, x) = sum_{j = 0}^n xj^2.
+"""
+
+def L2(yhat, y):
+    """
+    Arguments:
+    yhat -- vector of size m (predicted labels)
+    y -- vector of size m (true labels)
+    
+    Returns:
+    loss -- the value of the L2 loss function defined above
+    """
+    loss = np.sum(np.dot((y - yhat), (y - yhat)))
+
+    return loss
+
+yhat = np.array([.9, 0.2, 0.1, .4, .9])
+y = np.array([1, 0, 0, 1, 1])
+
+print("L2 = " + str(L2(yhat, y)))
+
+L2_test(L2)
+
+"""
+Comgratulations on completing this assignment. We hope that this little warm-up exercise
+helps you in the future assignments, which will be more exciting and interesting!
+
+What to remember:
+    - Vectorization is very important in deep learning. It provides computational efficiency
+    and clarity.
+    - You have reviewed the L1 and L2 loss.
+    - You are familiar with many numpy functions such as np.sum, np.dot, np.multiply,
+    np.maximum, etc...
+"""
