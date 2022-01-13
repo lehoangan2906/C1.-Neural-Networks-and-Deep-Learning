@@ -47,16 +47,15 @@ print("Accuracy of logistic regression: %d " % float((np.dot(Y, LR_predictions) 
 print("\n========================================")
 #plt.show()
 
-# the dataset is not linearly separate, so logistic regression doesn;t perform well
+# the dataset is not linearly separate, so logistic regression doesn't perform well
 
 # Neural network model with single hidden layer
 
 """
 The general methodology to build a Neural Netwwork is to:
 
-    1. Define the neural network structure (number of input units, number 
-    of hidden units, etc).
-    2. Initialie the model's parameters
+    1. Define the neural network structure (number of input units, number of hidden units, etc).
+    2. Initialize the model's parameters
     3. Loop:
         - Implement forward propagation
         - Compute loss
@@ -222,10 +221,10 @@ def update_parameters(parameters, grads, learning_rate = 1.2):
     dW2 = grads["dW2"]
     db2 = grads["db2"]
     
-    W1 = W1 - learning_rate*dW1
-    b1 = b1 - learning_rate*db1
-    W2 = W2 - learning_rate*dW2
-    b2 = b2 - learning_rate*db2
+    W1 = W1 - learning_rate * dW1
+    b1 = b1 - learning_rate * db1
+    W2 = W2 - learning_rate * dW2
+    b2 = b2 - learning_rate * db2
     
     parameters = {"W1": W1,
                   "b1": b1,
@@ -254,12 +253,24 @@ def nn_model(X, Y, n_h, num_iterations = 1000, print_cost = False):
     n_y = layer_sizes(X, Y)[2]
     
     parameters = initialize_parameters(n_x, n_h, n_y)
+    """
+    Returns:
+        w1 -- weight matrix of shape (n_h, n_x)
+        b1 -- bias vector of shape (n_h, 1)
+        w2 -- weight matrix of shape (n_y, n_h)
+        b2 -- bias vector of shape (n_y, 1)
+    """
     
     # Loop (gradient descent)
 
     for i in range(0, num_iterations):
         # Forward propagation. 
         # Inputs: "X, parameters". Outputs: "A2, cache".
+        """
+        Returns:
+            A2 -- The sigmoid output of the second activation
+            cache -- a dictionary containing "Z1", "A1", "Z2" and "A2"
+        """
         A2, cache = forward_propagation(X, parameters)
         
         # Cost function. 
@@ -272,7 +283,6 @@ def nn_model(X, Y, n_h, num_iterations = 1000, print_cost = False):
         
         # Gradient descent parameter update. 
         # Inputs: "parameters, grads". Outputs: "parameters".
-
         parameters = update_parameters(parameters, grads)
         
         # Print the cost every 1000 iterations
@@ -306,6 +316,7 @@ parameters = nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True)
 # Plot the decision boundary
 plot_decision_boundary(lambda x: predict(parameters, x.T), X, Y)
 plt.title("Decision Boundary for hidden layer size " + str(4))
+plt.show()
 
 # Print accuracy
 predictions = predict(parameters, X)
