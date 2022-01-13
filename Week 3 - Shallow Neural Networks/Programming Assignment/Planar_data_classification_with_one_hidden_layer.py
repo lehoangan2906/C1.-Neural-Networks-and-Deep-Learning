@@ -12,7 +12,7 @@ from planar_utils import plot_decision_boundary, sigmoid, load_planar_dataset, l
 X, Y = load_planar_dataset()
 
 
-# visualie the data:
+# visualize the data:
 plt.scatter(X[0, :], X[1, :], c = Y, s = 40, cmap = plt.cm.Spectral);
 #plt.show()
 
